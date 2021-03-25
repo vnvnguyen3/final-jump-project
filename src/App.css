@@ -1,0 +1,64 @@
+body {
+  text-align: center;
+  background-color: #EEEBDD;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+.jumbotron {
+  margin: 0;
+  padding: 30px;
+  background-image: linear-gradient(to right, #810000, #630000);
+  color: white;
+}
+
+.jumbotron img{
+  vertical-align: middle;
+  border-radius: 50%;
+}
+
+.navbar{
+  font-size: 20px;
+  color: white;
+}
+
+.nav-link{
+  color: white;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  height: 100%;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  max-width: 1500px;
+}
+
+.navbar-dark{
+  background-color:#630000;
+}
+
+.formgroup{
+  padding: 10px;
+}
+
+.button{
+  padding: 10px;
+  margin: 10px;
+  font-size: 15px;
+  color: white;
+  background-color: #810000;
+  border-radius: 30%;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+.restaurant-li{
+  color: black;
+  font-size: 20px;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
