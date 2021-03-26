@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
-import {Form, FormGroup, Input, Label, Button } from 'reactstrap';
+import React, { useState, useEffect } from 'react';
+import { Form, FormGroup, Input, Label, Button } from 'reactstrap';
 
-function CreateReview() {
+function CreateReview(props) {
     
     const [comment, setComment] = useState("");
     const [rating, setRating] = useState("");
 
-    const handleReview = (event) =>{
-        alert("Review: " + comment + " Rating: " + rating);
-        setComment("");
-        setRating("");
-        event.preventDefault();
-    }
+    useEffect(() => {
+        fetch('http://localhost:8080/add/rating',{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                rating: rating,
+                comment: comment,
+                ratingUser: props.user,
+                ratingRestaurant: props.restaurant
+            })
+        })
+    });
 
     const onChangeComment = (event) => {
         setComment(event.target.value);
@@ -22,7 +31,7 @@ function CreateReview() {
     }
 
     return (
-        <Form onSubmit={handleReview}>
+        <Form>
             <h3>Leave a review</h3>
             <FormGroup className="formgroup">
                 <Label for="comment">Comment </Label>

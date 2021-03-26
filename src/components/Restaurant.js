@@ -8,10 +8,11 @@ class Restaurant extends Component {
     constructor(){
         super();
         this.state = {
-            loggedIn:true,
-            admin:true,
             leaveReview:false,
-            updateRestaurant:false
+            updateRestaurant:false,
+            isLoaded: false,
+            reviewList: [],
+            error: null
         }
         this.leaveReview = this.leaveReview.bind(this);
     }
@@ -23,42 +24,47 @@ class Restaurant extends Component {
     updateRestaurant(){
         this.setState({updateRestaurant : !this.state.updateRestaurant})
     }
-
-    render(){
-        const reviewList = [
-            {
-                id: "1",
-                score: "1",
-                comment: "this place sucks",
-                username: "jonnymally"
-            },{
-                id: "2",
-                score: "2",
-                comment: "overrated as hell",
-                username: "R-yay"
+    async componentDidMount(){
+        try{
+            const res = await fetch("http://localhost:8080/ratings");
+            if(!res.ok){
+                throw Error(res.statusText);
             }
-        ];
+            const json = await res.json();
+            this.setState({
+                isLoaded: true,
+                reviewList: json
+            })
+        } catch(err){
+            console.log(err);
+            this.setState({
+                error: err
+            })
+        }
+    }
+    render(){
+        const reviewList = this.state.reviewList.filter(review => review.ratingRestaurant.id === this.props.restaurant.id);
         const reviews = reviewList.map((review) => 
-            <Review score={review.score} comment={review.comment} username={review.username} />
+            <Review score={review.rating} comment={review.comment} username={review.ratingUser.userName} />
         );
         return (
             <div>
-                <h1>{this.props.title} 
-                {this.state.admin ? <Button type="submit" value="submit" className="button" onClick={() => this.updateRestaurant()}>Update</Button>: ""}                
+                <h1>{this.props.restaurant.name} 
+                {this.props.user.role === "ADMIN" ? <Button type="submit" value="submit" className="button" onClick={() => this.updateRestaurant()}>Update</Button>: ""}                
                 </h1>
-                {this.state.updateRestaurant ? <UpdateRestaurant />
+                {this.state.updateRestaurant ? <UpdateRestaurant restaurant={this.props.restaurant} />
                 :<div>
-                    <p>{this.props.location}</p>
-                    <p>{this.props.description}</p>
+                    <p>{this.props.restaurant.address}</p>
+                    <p>{this.props.restaurant.description}</p>
                 </div>}   
                 <h2>Reviews</h2>
                 {reviews}
-                {this.state.loggedIn ? 
+                {this.props.user.role ==="USER" || this.props.user.role === "ADMIN" ? 
                     <Button type="submit" value="submit" className="button" onClick={() => this.leaveReview()}>Leave a review</Button>
                     : "You must be logged in to leave a review"
                 }
                 {this.state.leaveReview && 
-                    <CreateReview />}
+                    <CreateReview user={this.props.user} restaurant={this.props.restaurant} />}
             </div>
         )
     }

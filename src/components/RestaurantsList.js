@@ -59,13 +59,13 @@ class RestaurantsList extends Component {
         const RestaurantWithId = ({match}) => {
             const restaurant = restaurantList.filter(restaurant => restaurant.id == match.params.restaurantId)[0];
             return (
-                <Restaurant title={restaurant.name} location={restaurant.address} description={restaurant.description} />
+                <Restaurant restaurant={restaurant} user={this.props.user} />
             );
         }
         const RestaurantWithName = ({match}) => {
             const restaurant = restaurantList.filter(restaurant => restaurant.name === match.params.restaurantName)[0];
             return (
-                <Restaurant title={restaurant.name} location={restaurant.address} description={restaurant.description} />
+                <Restaurant restaurant={restaurant} user={this.props.user} />
             );
         }
         if(error){
@@ -78,8 +78,8 @@ class RestaurantsList extends Component {
             return (
                 <div>
                     <Switch>
-                        <Route path={`/restaurant/id/:restaurantId`} component={RestaurantWithId}/>
-                        <Route path={`/restaurant/name/:restaurantName`} component={RestaurantWithName}/>
+                        <Route path='/restaurant/id/:restaurantId' component={RestaurantWithId}/>
+                        <Route path='/restaurant/name/:restaurantName' component={RestaurantWithName}/>
                         <Route path='/restaurant' />
                     </Switch>
                     <h2>Select from the list of restaurants</h2>
