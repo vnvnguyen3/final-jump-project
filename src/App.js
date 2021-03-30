@@ -5,6 +5,8 @@ import Header from './components/Header';
 import Login from './components/Login';
 import RestaurantsList from './components/RestaurantsList';
 import User from './components/User';
+import SignUp from './components/SignUp';
+import AddRestaurant from './components/AddRestaurant';
 import { Component } from 'react';
 
 class App extends Component {
@@ -20,7 +22,7 @@ class App extends Component {
 
   async componentDidMount(){
       try{
-          const res = await fetch("http://localhost:8080/users");
+          const res = await fetch("http://localhost:5000/users");
           if(!res.ok){
               throw Error(res.statusText);
           }
@@ -42,13 +44,7 @@ class App extends Component {
   }
 
   render(){
-    const {isLoaded, userList, error} = this.state;
-    const LoggedIn = ({match}) => {
-      const user = userList.filter(user => user.userName == match.params.username)[0];
-      return(
-          <User user={user} onSelectUser={this.updateUser} />
-      );
-    }
+    const {isLoaded, error} = this.state;
     if(error){
       return <div>Error: {error.message}</div>
     }
@@ -61,11 +57,19 @@ class App extends Component {
             <Header user={this.state.user} />
             <Switch>
               <Route path='/' exact component={Home} />
-              <Route path='/restaurant' component={RestaurantsList}>
+              <Route path='/restaurant'>
                 <RestaurantsList user={this.state.user} />
               </Route>
-              <Route path='/login' component={Login} />
-              <Route path='/user/:username' component={LoggedIn} />
+              <Route path='/login'>
+                <Login onSelectUser={this.updateUser} />
+              </Route>
+              <Route path='/signup'>
+                <SignUp />
+              </Route>
+              <Route path='/users/:username'>
+                <User user={this.state.user} />
+              </Route>
+              <Route path='/addrestaurant' component={AddRestaurant} />
             </Switch>
           </Router>
         </div>

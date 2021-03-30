@@ -33,7 +33,7 @@ class RestaurantsList extends Component {
 
     async componentDidMount(){
         try{
-            const res = await fetch("http://localhost:8080/restaurants");
+            const res = await fetch("http://localhost:5000/restaurants");
             if(!res.ok){
                 throw Error(res.statusText);
             }
@@ -63,7 +63,8 @@ class RestaurantsList extends Component {
             );
         }
         const RestaurantWithName = ({match}) => {
-            const restaurant = restaurantList.filter(restaurant => restaurant.name === match.params.restaurantName)[0];
+            const searchName = match.params.restaurantName.toLowerCase();
+            const restaurant = restaurantList.filter(restaurant => restaurant.name.toLowerCase().includes(searchName))[0];
             return (
                 <Restaurant restaurant={restaurant} user={this.props.user} />
             );
@@ -86,6 +87,7 @@ class RestaurantsList extends Component {
                     <p>or use the search bar</p>
                     <SearchBar />
                     {restaurants}
+                    {this.props.user.role==="ADMIN" ? <Link to='/addrestaurant'><Button type="submit" value="submit" className="button">Add Restaurant</Button></Link> : ""}
                 </div>
             )
         }

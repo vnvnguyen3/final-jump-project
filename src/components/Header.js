@@ -10,7 +10,7 @@ class Header extends Component{
                     <div className="container">
                         <div className="row">
                             <div className="col">
-                                <h1>Velp <img src="logo.jpg" height={40} alt="logo" /></h1>
+                                <h1>Velp <img src="../../logo.jpg" height={40} alt="logo" /></h1>
                                 <h2>Pretend your review matters</h2>
                             </div>
                         </div>
@@ -26,6 +26,9 @@ class Header extends Component{
                         </NavLink>
                         <NavLink className="nav-link" to="/login">
                             Login
+                        </NavLink>
+                        <NavLink className="nav-link" to="/signup">
+                            Sign Up
                         </NavLink>
                         <NavLink className="nav-link" to={`/users/${this.props.user.userName}`}>
                             {this.props.user.userName}

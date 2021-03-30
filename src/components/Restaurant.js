@@ -26,7 +26,7 @@ class Restaurant extends Component {
     }
     async componentDidMount(){
         try{
-            const res = await fetch("http://localhost:8080/ratings");
+            const res = await fetch("http://localhost:5000/ratings");
             if(!res.ok){
                 throw Error(res.statusText);
             }
@@ -43,30 +43,41 @@ class Restaurant extends Component {
         }
     }
     render(){
+        const {isLoaded, error} = this.state;
+        const reviewid = this.state.reviewList.length + 1;
         const reviewList = this.state.reviewList.filter(review => review.ratingRestaurant.id === this.props.restaurant.id);
         const reviews = reviewList.map((review) => 
-            <Review score={review.rating} comment={review.comment} username={review.ratingUser.userName} />
+            <Review review={review} user={this.props.user} />
         );
-        return (
-            <div>
-                <h1>{this.props.restaurant.name} 
-                {this.props.user.role === "ADMIN" ? <Button type="submit" value="submit" className="button" onClick={() => this.updateRestaurant()}>Update</Button>: ""}                
-                </h1>
-                {this.state.updateRestaurant ? <UpdateRestaurant restaurant={this.props.restaurant} />
-                :<div>
-                    <p>{this.props.restaurant.address}</p>
-                    <p>{this.props.restaurant.description}</p>
-                </div>}   
-                <h2>Reviews</h2>
-                {reviews}
-                {this.props.user.role ==="USER" || this.props.user.role === "ADMIN" ? 
-                    <Button type="submit" value="submit" className="button" onClick={() => this.leaveReview()}>Leave a review</Button>
-                    : "You must be logged in to leave a review"
-                }
-                {this.state.leaveReview && 
-                    <CreateReview user={this.props.user} restaurant={this.props.restaurant} />}
-            </div>
-        )
+        if(error){
+            return <div>Error: {error.message}</div>
+        }
+        else if(!isLoaded){
+              return <div>Loading.....</div>
+        }else{
+            return (
+                <div>
+                    <h1>{this.props.restaurant.name} 
+                    {this.props.user.role === "ADMIN" ? <Button type="submit" value="submit" className="button" onClick={() => this.updateRestaurant()}>Update</Button>: ""}   
+                    {this.props.user.role ==="USER" || this.props.user.role === "ADMIN" ? <Button type="submit" value="submit" className="button">Favorite</Button>: "" }             
+                    </h1>
+                    {this.state.updateRestaurant ? <UpdateRestaurant user={this.props.user} restaurant={this.props.restaurant} />
+                    :<div>
+                        <img src="../../whataburger.png" height={200} alt="burger" />
+                        <p>{this.props.restaurant.address}</p>
+                        <p>{this.props.restaurant.description}</p>
+                    </div>}   
+                    <h2>Reviews</h2>
+                    {reviews}
+                    {this.props.user.role ==="USER" || this.props.user.role === "ADMIN" ? 
+                        <Button type="submit" value="submit" className="button" onClick={() => this.leaveReview()}>Leave a review</Button>
+                        : "You must be logged in to leave a review"
+                    }
+                    {this.state.leaveReview && 
+                        <CreateReview user={this.props.user} restaurant={this.props.restaurant} id={reviewid} />}
+                </div>
+            )
+        }
     }
 }
 
